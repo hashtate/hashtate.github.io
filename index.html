@@ -71,6 +71,83 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-day0621" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/06/21/day0621/" class="article-date">
+  <time class="dt-published" datetime="2022-06-21T00:00:00.000Z" itemprop="datePublished">2022-06-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/06/21/day0621/">day0621</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>#5장 </p>
+<p>#데이터 불러오기 </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mpg1 <span class="operator">&lt;-</span> read.csv<span class="punctuation">(</span><span class="string">&quot;R/mpg1.csv&quot;</span><span class="punctuation">,</span>stringsAsFactors <span class="operator">=</span> <span class="built_in">F</span><span class="punctuation">)</span></span><br><span class="line">str<span class="punctuation">(</span>mpg1<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">## &#x27;data.frame&#x27;:	234 obs. of  5 variables:</span><br><span class="line">##  $ manufacturer: chr  &quot;audi&quot; &quot;audi&quot; &quot;audi&quot; &quot;audi&quot; ...</span><br><span class="line">##  $ trans       : chr  &quot;auto&quot; &quot;manual&quot; &quot;manual&quot; &quot;auto&quot; ...</span><br><span class="line">##  $ drv         : chr  &quot;f&quot; &quot;f&quot; &quot;f&quot; &quot;f&quot; ...</span><br><span class="line">##  $ cty         : int  18 21 20 21 16 18 18 18 16 20 ...</span><br><span class="line">##  $ hwy         : int  29 29 31 30 26 26 27 26 25 28 ...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span>mpg1<span class="operator">$</span>trans<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">##   auto manual </span><br><span class="line">##    157     77</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span>mpg1<span class="operator">$</span>manufacturer<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">##       audi  chevrolet      dodge       ford      honda    hyundai       jeep </span><br><span class="line">##         18         19         37         25          9         14          8 </span><br><span class="line">## land rover    lincoln    mercury     nissan    pontiac     subaru     toyota </span><br><span class="line">##          4          3          4         13          5         14         34 </span><br><span class="line">## volkswagen </span><br><span class="line">##         27</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span>mpg1<span class="operator">$</span>drv<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">##   4   f   r </span><br><span class="line">## 103 106  25</span><br></pre></td></tr></table></figure>
+
+<p>-경로 설정이 매우 중요<br>getwd()<br>mpg1 &lt;- read.csv(“mpg1.csv”,stringsAsFactors &#x3D; F) #mpg1 소환술<br>str(mpg1)<br>-manufacturer 제조회사 trans 변속기 drv 구동방식 cty 시내연비 hwy 고속연비</p>
+<p>-교차분석 : table(데이터세트$변수1, 데이터세트$변수2)<br>-아래 표는 TRANS 와 DRV 의 교차분석<br>table(mpg1$trans,mpg1$drv)</p>
+<p>-통계 공부 방법<br>-빈도 주의자 vs 베이지안 주의자<br>-일반적으로 빈도주의 &#x2F; 숫자를 셈 </p>
+<p>-통계 언어<br>mean(mtcars$mpg) #평균<br>var(mtcars$mpg) #분산<br>sd(mtcars$mpg) #표준편차<br>-표준편차는 비교 대상이 있어야 가치가 있고 활용 가능 </p>
+<p>-사분위수<br>-전체 수를 4등분한 수 </p>
+<ul>
+<li>IQR : 1사분위와 3사분위수 사이의거리<br>-소득분위<br>-통계분석 &#x2F; 머신러닝 -&gt; 이상치를 제거했을때</li>
+</ul>
+<p>quantile(mtcars$mpg)</p>
+<p>#통계요약 구하기<br>summary(iris)</p>
+<p>-중간값 : 100명중 50번째 키순의 값<br>-평균 : 전체 키 합의 &#x2F;100<br>-두 개가 같을 수 없다 </p>
+<p>summary(iris$Sepal.Length)</p>
+<p>-빈도 분석<br>-범주별 빈도  –&gt; 문자<br>str(mpg1)<br>~#개별 값<br>table(mpg1$trans)<br>table(mpg1$manufacturer)<br>table(mpg1$drv)<br>#비교<br>table(mpg1$cty, mpg1$hwy)</p>
+<p>#빈도의 비율 구하기<br>a &lt;- table(mpg1$trans)<br>prop.table(a)</p>
+<p>b &lt;- table(mpg1$trans, mpg1$drv)<br>prop.table(b)</p>
+<p>prop.table(table(mpg1$manufacturer))</p>
+<p>-행과 열의 비율 형식 맞춘다 </p>
+<p>prop.table(b, margin &#x3D; 1)<br>prop.table(b, margin &#x3D; 2)</p>
+<p>-소숫점 아래 자리 지정  (0.32323 , 2번째 자리까지 맞춰라)<br>round(0.32321151315312,2)</p>
+<p>round(prop.table(table(mpg1$trans)),2)</p>
+<p>-<a target="_blank" rel="noopener" href="https://gt.rstudio.com/">https://gt.rstudio.com/</a> 참고용 테이블 이미지 템플릿 </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hashtate.github.io/2022/06/21/day0621/" data-id="cl4nmcjkp0000b8u91tepf7pr" data-title="day0621" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-test" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/06/20/test/" class="article-date">
@@ -254,6 +331,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/06/21/day0621/">day0621</a>
+          </li>
         
           <li>
             <a href="/2022/06/20/test/">Visualization</a>
