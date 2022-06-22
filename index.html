@@ -71,6 +71,137 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-day0622" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/06/22/day0622/" class="article-date">
+  <time class="dt-published" datetime="2022-06-22T00:00:00.000Z" itemprop="datePublished">2022-06-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/06/22/day0622/">day0622 결측치, 이상치 처리</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>#가장 먼저 라이브러리 불러오기</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">library<span class="punctuation">(</span>dplyr<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">## 다음의 패키지를 부착합니다: &#x27;dplyr&#x27;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## The following objects are masked from &#x27;package:stats&#x27;:</span><br><span class="line">## </span><br><span class="line">##     filter, lag</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## The following objects are masked from &#x27;package:base&#x27;:</span><br><span class="line">## </span><br><span class="line">##     intersect, setdiff, setequal, union</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">library<span class="punctuation">(</span>ggplot2<span class="punctuation">)</span></span><br><span class="line">glimpse<span class="punctuation">(</span>iris<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">## Rows: 150</span><br><span class="line">## Columns: 5</span><br><span class="line">## $ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…</span><br><span class="line">## $ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…</span><br><span class="line">## $ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.…</span><br><span class="line">## $ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…</span><br><span class="line">## $ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</span><br></pre></td></tr></table></figure>
+<p>#데이터를 불러오기 </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exam_na <span class="operator">&lt;-</span> read.csv<span class="punctuation">(</span><span class="string">&quot;r/exam_na.csv&quot;</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<p>#결측치 확인<br>is.na() : () 안에 검증하려는 데이터ㄱㄱ </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">is.na</span><span class="punctuation">(</span>exam_na<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">##         id   sex korean english  math</span><br><span class="line">## [1,] FALSE FALSE  FALSE    TRUE FALSE</span><br><span class="line">## [2,] FALSE FALSE  FALSE   FALSE FALSE</span><br><span class="line">## [3,] FALSE FALSE  FALSE   FALSE FALSE</span><br><span class="line">## [4,] FALSE FALSE   TRUE   FALSE FALSE</span><br><span class="line">## [5,] FALSE FALSE  FALSE    TRUE FALSE</span><br></pre></td></tr></table></figure>
+
+
+<p>#결측치 빈도 구하기<br>table() : 빈도 구하기<br>FALSE : 결측치가 아닌 것 TRUE : 결측치 </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>exam_na<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">## FALSE  TRUE </span><br><span class="line">##    22     3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>exam_na<span class="operator">$</span>korean<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">## FALSE  TRUE </span><br><span class="line">##     4     1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">summary<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>exam_na<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">##      id             sex            korean         english       </span><br><span class="line">##  Mode :logical   Mode :logical   Mode :logical   Mode :logical  </span><br><span class="line">##  FALSE:5         FALSE:5         FALSE:4         FALSE:3        </span><br><span class="line">##                                  TRUE :1         TRUE :2        </span><br><span class="line">##     math        </span><br><span class="line">##  Mode :logical  </span><br><span class="line">##  FALSE:5        </span><br><span class="line">## </span><br></pre></td></tr></table></figure>
+
+<p>#결측치 처리방법</p>
+<ol>
+<li><p>제거하고 처리하기 메인 X</p>
+</li>
+<li><p>다른 값으로 대체하기 메인 O</p>
+</li>
+</ol>
+<ul>
+<li>평균 입력</li>
+</ul>
+<h1 id="결측치를-제외하고-분석하기"><a href="#결측치를-제외하고-분석하기" class="headerlink" title="결측치를 제외하고 분석하기"></a>결측치를 제외하고 분석하기</h1><p>-160p<br>na.rm &#x3D; T : 결측치가 있으면 제거해 주세요</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mean<span class="punctuation">(</span>exam_na<span class="operator">$</span>korean<span class="punctuation">,</span> na.rm <span class="operator">=</span> <span class="built_in">T</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## [1] 90.25</span><br></pre></td></tr></table></figure>
+
+<p>na.omit() : 결측치가 있는 행을 모두 제외<br>-가급적 쓰지 말 것 로스가 너무 많다 </p>
+<p>filter() : 결측치가 없는 행만 추출<br>! : 반대. : 결측치가 있는 행만 추출</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exam_na <span class="operator">%&gt;%</span> filter<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>korean<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">##   id sex korean english math</span><br><span class="line">## 1  4   M     NA      84   80</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exam_na <span class="operator">%&gt;%</span> filter<span class="punctuation">(</span><span class="operator">!</span><span class="built_in">is.na</span><span class="punctuation">(</span>korean<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">##   id sex korean english math</span><br><span class="line">## 1  1   M     87      NA   82</span><br><span class="line">## 2  2   F     92      95   93</span><br><span class="line">## 3  3   F     95      92   90</span><br><span class="line">## 4  5   F     87      NA   88</span><br></pre></td></tr></table></figure>
+
+<h1 id="결측치를-다른-값으로-대체하기"><a href="#결측치를-다른-값으로-대체하기" class="headerlink" title="결측치를 다른 값으로 대체하기"></a>결측치를 다른 값으로 대체하기</h1><ul>
+<li>imputation </li>
+<li>imputation 참고자료<ul>
+<li><a target="_blank" rel="noopener" href="https://www.kdnuggets.com/2017/09/missing-data-imputation-using-r.html">A Solution to Missing Data: Imputation Using R</a></li>
+<li><a target="_blank" rel="noopener" href="https://velog.io/@lifeisbeautiful/R-%EA%B2%B0%EC%B8%A1%EA%B0%92NA-%EC%A0%9C%EA%B1%B0-%EB%8C%80%EC%B2%B4-%EB%B0%A9%EB%B2%95">R 결측값(NA) 제거, 대체 방법</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="이상치"><a href="#이상치" class="headerlink" title="이상치"></a>이상치</h1><p>데이터의 특정 값이 이상이 있다. 무언가 이상이 있다.<br>case 1 : 정해진 범주에서 벗어난 데이터<br> 2000년 4월 30일 -&gt; 2000년 40월 30일 : 이상 데이터 </p>
+<p>case 2 : 숫자 &#x2F; 아웃라이어(outlier) &#x2F; 극단값<br> 평균 : 평균임금 320만원 &#x2F; 손흥민 임금 몇십억 </p>
+ <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mpg1_out <span class="operator">&lt;-</span> read.csv<span class="punctuation">(</span><span class="string">&quot;r/mpg1_out.csv&quot;</span><span class="punctuation">)</span></span><br><span class="line">glimpse<span class="punctuation">(</span>mpg1_out<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## Rows: 234</span><br><span class="line">## Columns: 3</span><br><span class="line">## $ trans &lt;int&gt; 1, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 3, 1, 1…</span><br><span class="line">## $ drv   &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;5&quot;,…</span><br><span class="line">## $ cty   &lt;int&gt; 18, 21, 20, 21, 16, 18, 18, 18, 16, 20, 19, 15, 17, 17, 15, 15, …</span><br></pre></td></tr></table></figure>
+<p> -trans의 갯수를 구하자 </p>
+ <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table<span class="punctuation">(</span>mpg1_out<span class="operator">$</span>trans<span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">##   1   2   3 </span><br><span class="line">## 154  76   4</span><br></pre></td></tr></table></figure>
+<p>3은 4개밖에 없음 결측치 처리를 하고 싶음 </p>
+<p>-ifelse : 만약 ~라면, 내가 무엇을 할 것이다. (가정)<br> 만약 trans의 값이 3이라면, 결측치로 바꿔주세요. 나머지는 그대로 </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mpg1_out<span class="operator">$</span>trans <span class="operator">&lt;-</span> ifelse<span class="punctuation">(</span>mpg1_out<span class="operator">$</span>trans <span class="operator">==</span> <span class="number">3</span><span class="punctuation">,</span> <span class="literal">NA</span><span class="punctuation">,</span> mpg1_out<span class="operator">$</span>trans<span class="punctuation">)</span></span><br><span class="line">table<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>mpg1_out<span class="operator">$</span>trans<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">## FALSE  TRUE </span><br><span class="line">##   230     4</span><br></pre></td></tr></table></figure>
+
+<p>결측치 제거 </p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result <span class="operator">&lt;-</span> mpg1_out <span class="operator">%&gt;%</span> filter<span class="punctuation">(</span><span class="operator">!</span><span class="built_in">is.na</span><span class="punctuation">(</span>trans<span class="punctuation">)</span><span class="punctuation">)</span></span><br><span class="line">table<span class="punctuation">(</span><span class="built_in">is.na</span><span class="punctuation">(</span>result<span class="operator">$</span>trans<span class="punctuation">)</span><span class="punctuation">)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">## </span><br><span class="line">## FALSE </span><br><span class="line">##   230</span><br></pre></td></tr></table></figure>
+
+<p>#극단치 처리<br>숫자 데이터 boxplot()<br>boxpolt() 함수를 통해서 극단치가 있는지 없는지 확인 가능<br>IQR : 3사분위 - 1사분위<br>경계값 : IQR * 1.5<br>  IQR + IQR * : 상한 &#x2F; IQR - IQR * : 하한 </p>
+<p>  네모 박스 안 부분이 중앙값<br>  슬래쉬가 경계값 (상한, 하한)<br>  도트가 극단치</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mpg1 <span class="operator">&lt;-</span> read.csv<span class="punctuation">(</span><span class="string">&quot;r/mpg1.csv&quot;</span><span class="punctuation">)</span></span><br><span class="line">boxplot<span class="punctuation">(</span>mpg<span class="operator">$</span>cty<span class="punctuation">)</span></span><br><span class="line">boxplot<span class="punctuation">(</span>mpg1<span class="operator">$</span>cty<span class="punctuation">)</span><span class="operator">$</span>stats</span><br></pre></td></tr></table></figure>
+
+<p><img src="/source/images/rmd_0622/Rplot.png"><!-- --></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">##      [,1]</span><br><span class="line">## [1,]    9</span><br><span class="line">## [2,]   14</span><br><span class="line">## [3,]   17</span><br><span class="line">## [4,]   19</span><br><span class="line">## [5,]   26</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hashtate.github.io/2022/06/22/day0622/" data-id="cl4ozwgpa0000xou94392cnfn" data-title="day0622 결측치, 이상치 처리" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-day0621" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/06/21/day0621/" class="article-date">
@@ -458,6 +589,10 @@
       <ul>
         
           <li>
+            <a href="/2022/06/22/day0622/">day0622 결측치, 이상치 처리</a>
+          </li>
+        
+          <li>
             <a href="/2022/06/21/day0621/">day0621</a>
           </li>
         
@@ -471,10 +606,6 @@
         
           <li>
             <a href="/2022/06/17/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/17/day0617/">Day-1 Visualization</a>
           </li>
         
       </ul>
